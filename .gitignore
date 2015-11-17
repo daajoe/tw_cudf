@@ -1,0 +1,7 @@
+*~
+0arch
+doc
+*.pyc
+libcudf
+test.*
+*.bz2
