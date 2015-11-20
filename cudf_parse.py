@@ -54,12 +54,13 @@ class Parser:
 
     def parse(self,filename):
         records = []
+        request = []
         with open(filename) as f:
             for empty, record in groupby(f, key=str.isspace):
                 if not empty:
                     l = map(lambda s : s.split(': '), record)
                     # we ignore the preamble here ...
-                    if 'preamble' not in l[0] :
+                    if 'preamble' not in l[0]:
                         pairs = ([k, Parser.cnf(k,v.strip())] for k,v in l)
                         records.append(dict(pairs))
         #print records

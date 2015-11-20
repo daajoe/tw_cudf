@@ -76,13 +76,20 @@ def collect_versions(l):
 
 def generate_dep_graph(l):
     #We ignore upgrade/install tags for now
-    l=filter(lambda x: x.has_key('package'), l)
+    p=filter(lambda x: x.has_key('package'), l)
+    u=filter(lambda x: x.has_key('request'), l)[0]['upgrade'].split(',')
 
     G=nx.Graph()
-    versions=collect_versions(l)
-    for r in l:
+    versions=collect_versions(p)
+    for r in p:
         v=(r['package'], r['version'])
         for p in cudf_properties:
             add(G,r,p,versions)
+    
+    #we try the latest version
+    versions={}
+    for e in u:
+        print e
+    #desc = 
     plt.savefig('test.png')
     return G
