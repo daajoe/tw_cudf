@@ -28,15 +28,6 @@ import sys
 import optparse
 import fileinput
 from StringIO import StringIO
-
-def options():
-    usage  = "usage: %prog [options] [files]"
-    parser = optparse.OptionParser(usage=usage)
-    #parser.add_option("-o", "--output", dest="out", type="string", help="Output file", default=None)
-    opts, files = parser.parse_args(sys.argv[1:])
-    return opts, files
-
-
 from itertools import groupby
 
 class Parser:
@@ -63,7 +54,6 @@ class Parser:
                     if 'preamble' not in l[0]:
                         pairs = ([k, Parser.cnf(k,v.strip())] for k,v in l)
                         records.append(dict(pairs))
-        #print records
         return records
 
 class Application:

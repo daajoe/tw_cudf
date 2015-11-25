@@ -27,25 +27,33 @@ import fileinput
 from StringIO import StringIO
 
 def options():
-    usage  = "usage: %prog [options] [files]"
+    usage  = 'usage: %prog [options] [files]'
     parser = optparse.OptionParser(usage=usage)
-    #parser.add_option("-o", "--output", dest="out", type="string", help="Output file", default=None)
+    parser.add_option('--no_preprocessing', dest='preprocessing',
+                      action='store_false', help='Deactivate simple preprocessing', default=True)
+    parser.add_option('--no_colors', dest='colors',
+                      action='store_false', help="Do not color output graph", default=True)
+    parser.add_option('--no_gml', dest='write_gml',
+                      action='store_false', help='Do not write gml output file', default=True)
+    parser.add_option('--gml_output', dest='gml_filename',
+                      type='string', help='GML output filename',
+                      default='filename.gml')
     opts, files = parser.parse_args(sys.argv[1:])
     return opts, files
 
 from cudf_parse import *
 from cudf_dep_graph import *
 
-def parse_and_run(f):
+def parse_and_run(f,gml_filename,preprocessing, colors,write_gml):
     logging.info('Parsing starts')
     p   = Parser()
     try:
         records = p.parse(f)
         logging.info('Parsing done')
         logging.info('Starting graph generation...')
-        #G=generate_incidence_graph(records)
-        G=generate_dep_graph(records)
-        nx.write_gml(G,'test.gml')
+        G=generate_dep_graph(records, filename=gml_filename,
+                             preprocessing=preprocessing, colors=colors,
+                             write_gml=write_gml)
         logging.warning('='*80)
 
         #with transparent_stdout(output) as fh:
@@ -64,6 +72,11 @@ if __name__ == '__main__':
     #if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
     #    parse_and_run(sys.stdin,opts.out,opts.clasp,opts.threads)
     for f in files:
+        if opts.gml_filename == 'filename.gml':
+            opts.gml_filename='%s.gml' %f
         #sin = fileinput.input(f)
-        parse_and_run(f)
-    exit(1)
+        #TODO commandline parameters
+        parse_and_run(f,
+                      gml_filename=opts.gml_filename,preprocessing=opts.preprocessing,
+                      colors=opts.colors,write_gml=opts.write_gml)
+    exit(0)
