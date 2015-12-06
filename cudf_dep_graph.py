@@ -155,8 +155,8 @@ def generate_dep_graph(l,filename, preprocessing=True, colors=True, write_gml=Tr
             successors.update(ret)
         G=G.subgraph(list(successors)).copy()
 
-    if colors:
-        color_nodes(G,p,u,successors)
+        if colors:
+            color_nodes(G,p,u,successors)
     if write_gml:
         nx.write_gml(G,filename)
     return G
